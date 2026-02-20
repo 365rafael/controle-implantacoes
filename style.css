@@ -1,9 +1,209 @@
-body{font-family:Arial;margin:0;padding:15px;background:#f5f6fa}
-h1{text-align:center}
-.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:20px;box-shadow:0 0 10px rgba(0,0,0,.08)}
-button{padding:10px 15px;border:none;border-radius:8px;background:#2e86de;color:#fff;font-weight:bold;cursor:pointer}
-input,select{padding:10px;width:100%;margin:5px 0 10px;border-radius:8px;border:1px solid #ccc}
-#calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-.day{background:#fafafa;border-radius:8px;padding:8px;text-align:center;font-size:14px}
-.has{background:#dff9fb;font-weight:bold}
-.report-item{border-bottom:1px solid #eee;padding:5px 0}
+/* ========================= */
+/* BASE */
+/* ========================= */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 15px;
+    background: #f5f6fa;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2, h3 {
+    margin-top: 0;
+}
+
+/* ========================= */
+/* CARDS */
+/* ========================= */
+
+.card {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ========================= */
+/* BOTÕES */
+/* ========================= */
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background: #2e86de;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.btn-principal {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    font-size: 16px;
+    background: #2e86de;
+    color: #fff;
+    border-radius: 10px;
+}
+
+.btn-secundario {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    font-size: 16px;
+    background: #e0e0e0;
+    color: #333;
+    border-radius: 10px;
+}
+
+/* ========================= */
+/* INPUTS */
+/* ========================= */
+
+input,
+select {
+    padding: 10px;
+    width: 100%;
+    margin: 5px 0 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+/* ========================= */
+/* CALENDÁRIO */
+/* ========================= */
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.day {
+    position: relative;
+    padding: 8px;
+    text-align: center;
+    border-radius: 10px;
+    min-height: 60px;
+    background: #f2f4f7;
+    font-size: 14px;
+}
+
+.has {
+    background: #dff9fb;
+    border: 2px solid #2e86de;
+}
+
+/* ========================= */
+/* RELATÓRIO */
+/* ========================= */
+
+.report-item {
+    border-bottom: 1px solid #eee;
+    padding: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ========================= */
+/* DASHBOARD */
+/* ========================= */
+
+.dashboard-box {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+}
+
+.dashboard-box div {
+    flex: 1;
+    margin: 5px;
+    padding: 18px;
+    background: #f4f6f8;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.dashboard-box h3 {
+    margin: 0;
+    font-size: 22px;
+    color: #2e86de;
+}
+
+/* ========================= */
+/* GRÁFICO */
+/* ========================= */
+
+canvas {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* ========================= */
+/* NAVEGAÇÃO INFERIOR */
+/* ========================= */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    background: #ffffff;
+    border-top: 1px solid #ddd;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+}
+
+.bottom-nav button {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 10px 0;
+    font-size: 13px;
+    color: #2e86de;
+    font-weight: bold;
+}
+
+/* Espaço para não cobrir conteúdo */
+body {
+    padding-bottom: 80px;
+}
+
+/* ========================= */
+/* CONTROLE DE SEÇÕES */
+/* ========================= */
+
+#secInicio,
+#secNovo,
+#secAgenda,
+#secRelatorio,
+#secGrafico {
+    display: none;
+}
+
+/* ========================= */
+/* RESPONSIVO */
+/* ========================= */
+
+@media (min-width: 768px) {
+    body {
+        max-width: 700px;
+        margin: auto;
+    }
+}

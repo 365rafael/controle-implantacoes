@@ -4,51 +4,142 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Controle de Implantações</title>
+
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2e86de">
+
 </head>
 <body>
 
 <h1>📅 Controle de Implantações</h1>
 
-<div class="card">
-<h3>➕ Registrar Implantação</h3>
-<input id="cliente" placeholder="Nome do cliente" />
-<input type="date" id="data" />
-<button onclick="salvar()">Salvar</button>
-<button onclick="exportar()" style="background:#27ae60;margin-left:10px">Exportar Backup</button>
-<button onclick="document.getElementById('fileInput').click()" 
-        style="background:#8e44ad;margin-left:10px">
-📂 Restaurar Backup
-</button>
+<!-- ========================= -->
+<!-- 🏠 DASHBOARD -->
+<!-- ========================= -->
+<div class="card" id="secInicio">
 
-<input type="file" id="fileInput" accept=".json" 
-       style="display:none" 
-       onchange="restaurarBackup(event)">
+  <h2>📊 Resumo do Mês</h2>
+
+  <div class="dashboard-box">
+    <div>
+      <h3 id="dashTotal">0</h3>
+      <span>Total no mês</span>
+    </div>
+
+    <div>
+      <h3 id="dashHoje">0</h3>
+      <span>Hoje</span>
+    </div>
+  </div>
+
+  <div class="dashboard-box">
+    <div>
+      <h3 id="dashMelhor">-</h3>
+      <span>Melhor dia</span>
+    </div>
+  </div>
+
+  <button onclick="mostrarSecao('secNovo')" class="btn-principal">
+    ➕ Nova Implantação
+  </button>
+
+  <button onclick="mostrarSecao('secRelatorio')" class="btn-secundario">
+    📊 Ver Relatório
+  </button>
+
 </div>
 
-<div class="card">
-<h3>📆 Agenda</h3>
-<select id="mes" onchange="gerarCalendario()"></select>
-<select id="ano" onchange="gerarCalendario()"></select>
-<div id="calendar"></div>
+
+<!-- ========================= -->
+<!-- ➕ NOVA IMPLANTAÇÃO -->
+<!-- ========================= -->
+<div class="card" id="secNovo">
+
+  <h3>➕ Registrar Implantação</h3>
+
+  <input id="cliente" placeholder="Nome do cliente" />
+  <input type="date" id="data" />
+
+  <button onclick="salvar()">Salvar</button>
+
+  <button onclick="exportar()" style="background:#27ae60;margin-left:10px">
+    Exportar Backup
+  </button>
+
+  <button onclick="document.getElementById('fileInput').click()" 
+          style="background:#8e44ad;margin-left:10px">
+    📂 Restaurar Backup
+  </button>
+
+  <input type="file"
+         id="fileInput"
+         accept=".json"
+         style="display:none"
+         onchange="restaurarBackup(event)">
+
 </div>
 
-<div class="card">
-<h3>📊 Relatório Mensal</h3>
-<button onclick="exportarPDF()" style="background:#e67e22;margin-bottom:10px">
-📄 Exportar Relatório em PDF
-</button>
-<div id="total"></div>
-<div id="lista"></div>
+
+<!-- ========================= -->
+<!-- 📆 AGENDA -->
+<!-- ========================= -->
+<div class="card" id="secAgenda">
+
+  <h3>📆 Agenda</h3>
+
+  <select id="mes" onchange="gerarCalendario()"></select>
+  <select id="ano" onchange="gerarCalendario()"></select>
+
+  <div id="calendar"></div>
+
 </div>
 
-<div class="card">
+
+<!-- ========================= -->
+<!-- 📊 RELATÓRIO -->
+<!-- ========================= -->
+<div class="card" id="secRelatorio">
+
+  <h3>📊 Relatório Mensal</h3>
+
+  <select id="relMes" onchange="gerarRelatorio()"></select>
+  <select id="relAno" onchange="gerarRelatorio()"></select>
+
+  <button onclick="exportarPDF()" 
+          style="background:#e67e22;margin:10px 0">
+    📄 Exportar Relatório em PDF
+  </button>
+
+  <div id="total"></div>
+  <div id="lista"></div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- 📈 GRÁFICO -->
+<!-- ========================= -->
+<div class="card" id="secGrafico">
+
   <h3>📊 Gráfico Mensal</h3>
   <canvas id="grafico" height="100"></canvas>
+
 </div>
 
+
+<!-- ========================= -->
+<!-- 📱 BARRA INFERIOR -->
+<!-- ========================= -->
+<div class="bottom-nav">
+  <button onclick="mostrarSecao('secInicio')">🏠<br>Início</button>
+  <button onclick="mostrarSecao('secNovo')">➕<br>Novo</button>
+  <button onclick="mostrarSecao('secAgenda')">📅<br>Agenda</button>
+  <button onclick="mostrarSecao('secRelatorio')">📊<br>Relatório</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="script.js"></script>
 
 </body>

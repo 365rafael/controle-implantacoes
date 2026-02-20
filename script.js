@@ -1,349 +1,364 @@
-const STORAGE = 'implantacoes';
+// ================================
+// 📦 DADOS
+// ================================
 
-// =========================
-// DATA ATUAL (input)
-// =========================
-const hoje = new Date();
-const anoHoje = hoje.getFullYear();
-const mesHoje = String(hoje.getMonth() + 1).padStart(2,'0');
-const diaHoje = String(hoje.getDate()).padStart(2,'0');
+let dados = JSON.parse(localStorage.getItem("implantacoes")) || [];
 
-document.getElementById('data').value = `${anoHoje}-${mesHoje}-${diaHoje}`;
+// ================================
+// 🔁 SALVAR NO LOCALSTORAGE
+// ================================
 
-
-// =========================
-// FORMATAR DATA BR (SEM TIMEZONE)
-// =========================
-function formatarDataBR(dataISO){
-  const [ano, mes, dia] = dataISO.split('-');
-  return `${dia}-${mes}-${ano}`;
+function salvarLocal() {
+    localStorage.setItem("implantacoes", JSON.stringify(dados));
 }
 
+// ================================
+// 🔄 TROCAR SEÇÃO
+// ================================
 
-// =========================
-// LOCAL STORAGE
-// =========================
-function dados(){
-  return JSON.parse(localStorage.getItem(STORAGE) || '[]');
-}
-
-
-// =========================
-// SALVAR
-// =========================
-function salvar(){
-
-  const cliente = document.getElementById('cliente').value.trim();
-  const data = document.getElementById('data').value;
-
-  if(!cliente || !data){
-    alert('Preencha os dados');
-    return;
-  }
-
-  const arr = dados();
-  arr.push({cliente, data});
-
-  localStorage.setItem(STORAGE, JSON.stringify(arr));
-
-  document.getElementById('cliente').value='';
-
-  gerarCalendario();
-}
-
-
-// =========================
-// EXPORTAR BACKUP
-// =========================
-function exportar(){
-
-  const blob = new Blob([JSON.stringify(dados(),null,2)],{
-    type:'application/json'
-  });
-
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='backup_implantacoes.json';
-  a.click();
-}
-
-
-// =========================
-// RESTAURAR BACKUP
-// =========================
-function restaurarBackup(event){
-
-  const arquivo = event.target.files[0];
-  if(!arquivo) return;
-
-  const reader = new FileReader();
-
-  reader.onload = function(e){
-
-    try{
-      const dadosImportados = JSON.parse(e.target.result);
-
-      if(!Array.isArray(dadosImportados)){
-        alert("Arquivo inválido!");
-        return;
-      }
-
-      localStorage.setItem(STORAGE, JSON.stringify(dadosImportados));
-
-      alert("Backup restaurado com sucesso!");
-
-      gerarCalendario();
-
-    }catch{
-      alert("Erro ao restaurar backup.");
-    }
-  };
-
-  reader.readAsText(arquivo);
-  event.target.value = "";
-}
-
-
-// =========================
-// REMOVER LANÇAMENTO
-// =========================
-function remover(indexGlobal){
-
-  if(!confirm("Deseja realmente remover este lançamento?")) return;
-
-  const arr = dados();
-  arr.splice(indexGlobal, 1);
-
-  localStorage.setItem(STORAGE, JSON.stringify(arr));
-
-  gerarCalendario();
-}
-
-
-// =========================
-// SELECTS MÊS / ANO
-// =========================
-function popularSelects(){
-
-  const mes = document.getElementById('mes');
-  const ano = document.getElementById('ano');
-
-  for(let i=0;i<12;i++){
-    const op=document.createElement('option');
-    op.value=i;
-    op.text=i+1;
-    if(i===hoje.getMonth()) op.selected=true;
-    mes.appendChild(op);
-  }
-
-  for(let a=2024;a<=2030;a++){
-    const op=document.createElement('option');
-    op.value=a;
-    op.text=a;
-    if(a===hoje.getFullYear()) op.selected=true;
-    ano.appendChild(op);
-  }
-}
-
-
-// =========================
-// CALENDÁRIO
-// =========================
-function gerarCalendario(){
-
-  const mes = parseInt(document.getElementById('mes').value);
-  const ano = parseInt(document.getElementById('ano').value);
-
-  const cal=document.getElementById('calendar');
-  cal.innerHTML='';
-
-  const totalDias=new Date(ano,mes+1,0).getDate();
-  const arr=dados();
-
-  for(let d=1;d<=totalDias;d++){
-
-    const data = `${ano}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-
-    const count = arr.filter(x=>x.data===data).length;
-
-    const div=document.createElement('div');
-    div.className='day'+(count?' has':'');
-    div.innerHTML=`${d}<br>${count?count+' impl.':''}`;
-
-    cal.appendChild(div);
-  }
-
-  gerarRelatorio(mes,ano);
-  gerarGrafico(mes,ano);
-}
-
-
-// =========================
-// RELATÓRIO
-// =========================
-function gerarRelatorio(mes,ano){
-
-  const arrCompleto = dados();
-
-  const arrFiltrado = arrCompleto
-    .map((item,index)=>({ ...item, index }))
-    .filter(x=>{
-      const [anoItem, mesItem] = x.data.split('-');
-      return parseInt(mesItem)-1 === mes && parseInt(anoItem) === ano;
-    })
-    .sort((a,b)=> a.data.localeCompare(b.data));
-
-  document.getElementById('total').innerHTML=
-    `<b>Total no mês: ${arrFiltrado.length}</b>`;
-
-  const lista=document.getElementById('lista');
-  lista.innerHTML='';
-
-  arrFiltrado.forEach(x=>{
-
-    const d=document.createElement('div');
-    d.className='report-item';
-
-    d.innerHTML=`
-      ${formatarDataBR(x.data)} - ${x.cliente}
-      <button onclick="remover(${x.index})"
-              style="background:#e74c3c;
-                     margin-left:10px;
-                     padding:5px 8px;
-                     font-size:12px">
-        ❌
-      </button>
-    `;
-
-    lista.appendChild(d);
-  });
-}
-
-
-// =========================
-// GRÁFICO
-// =========================
-function gerarGrafico(mes,ano){
-
-  const arr = dados()
-    .filter(x=>{
-      const [anoItem, mesItem] = x.data.split('-');
-      return parseInt(mesItem)-1 === mes && parseInt(anoItem) === ano;
+function mostrarSecao(id) {
+    document.querySelectorAll(".card").forEach(sec => {
+        sec.style.display = "none";
     });
 
-  const mapa = {};
+    document.getElementById(id).style.display = "block";
 
-  arr.forEach(x=>{
-    const dia = parseInt(x.data.split('-')[2]);
-    mapa[dia] = (mapa[dia] || 0) + 1;
-  });
-
-  const dias = Object.keys(mapa).map(Number).sort((a,b)=>a-b);
-  const valores = dias.map(d=>mapa[d]);
-
-  const canvas = document.getElementById('grafico');
-  const ctx = canvas.getContext('2d');
-
-  canvas.width = canvas.offsetWidth;
-  canvas.height = 300;
-
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  if(dias.length === 0){
-    ctx.font = "16px Arial";
-    ctx.fillText("Sem implantações no mês", 20, 50);
-    return;
-  }
-
-  const larguraBarra = canvas.width / dias.length;
-  const max = Math.max(...valores);
-
-  ctx.font = "12px Arial";
-  ctx.textAlign = "center";
-
-  dias.forEach((dia,i)=>{
-
-    const valor = mapa[dia];
-    const alturaMax = 200;
-    const altura = (valor / max) * alturaMax;
-
-    const xCentro = i * larguraBarra + larguraBarra/2;
-    const yBarra = canvas.height - altura - 40;
-
-    ctx.fillStyle = '#2e86de';
-    ctx.fillRect(
-      i * larguraBarra + 10,
-      yBarra,
-      larguraBarra - 20,
-      altura
-    );
-
-    ctx.fillStyle = "#000";
-    ctx.fillText(valor, xCentro, yBarra - 5);
-
-    const mesFormatado = String(mes + 1).padStart(2,'0');
-    const diaFormatado = String(dia).padStart(2,'0');
-
-    ctx.fillText(`${diaFormatado}/${mesFormatado}`, xCentro, canvas.height - 15);
-  });
+    if (id === "secRelatorio") gerarRelatorio();
+    if (id === "secAgenda") gerarCalendario();
+    if (id === "secGrafico") gerarGrafico();
+    if (id === "secInicio") atualizarDashboard();
 }
 
+// ================================
+// ➕ SALVAR IMPLANTAÇÃO
+// ================================
 
-// =========================
-// EXPORTAR PDF
-// =========================
-function exportarPDF(){
+function salvar() {
+    const cliente = document.getElementById("cliente").value;
+    const data = document.getElementById("data").value;
 
-  const mesIndex = parseInt(document.getElementById('mes').value);
-  const ano = parseInt(document.getElementById('ano').value);
-  const mes = mesIndex + 1;
+    if (!cliente || !data) {
+        alert("Preencha todos os campos!");
+        return;
+    }
 
-  const arr = dados()
-    .filter(x=>{
-      const [anoItem, mesItem] = x.data.split('-');
-      return parseInt(mesItem)-1 === mesIndex && parseInt(anoItem) === ano;
-    })
-    .sort((a,b)=> a.data.localeCompare(b.data));
+    dados.push({ cliente, data });
+    salvarLocal();
 
-  const tela = window.open('', '', 'width=800,height=600');
+    document.getElementById("cliente").value = "";
+    document.getElementById("data").value = "";
 
-  tela.document.write('<html><head>');
-  tela.document.write('<title>Relatório</title>');
-  tela.document.write('<style>');
-  tela.document.write('body{font-family:Arial;padding:30px}');
-  tela.document.write('.item{border-bottom:1px solid #ccc;padding:6px 0}');
-  tela.document.write('</style>');
-  tela.document.write('</head><body>');
-
-  tela.document.write('<h2>Relatório de Implantações</h2>');
-  tela.document.write('<p>Mês: '+ mes +'/'+ ano +'</p>');
-  tela.document.write('<b>Total no mês: '+ arr.length +'</b><hr>');
-
-  arr.forEach(x=>{
-    tela.document.write('<div class="item">'+
-      formatarDataBR(x.data)+' - '+ x.cliente +
-      '</div>');
-  });
-
-  tela.document.write('</body></html>');
-
-  tela.document.close();
-  tela.print();
+    alert("Implantação salva com sucesso!");
+    atualizarDashboard();
 }
 
+// ================================
+// 📊 DASHBOARD
+// ================================
 
-// =========================
-// INICIALIZAÇÃO
-// =========================
-popularSelects();
-gerarCalendario();
+function atualizarDashboard() {
+    const hoje = new Date().toISOString().split("T")[0];
+    const mesAtual = new Date().getMonth();
+    const anoAtual = new Date().getFullYear();
 
+    const mesDados = dados.filter(item => {
+        const d = new Date(item.data);
+        return d.getMonth() === mesAtual && d.getFullYear() === anoAtual;
+    });
 
-// =========================
-// SERVICE WORKER (PWA)
-// =========================
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
-    .then(() => console.log("Service Worker registrado"))
-    .catch(err => console.log("Erro SW:", err));
+    const totalMes = mesDados.length;
+    const totalHoje = dados.filter(item => item.data === hoje).length;
+
+    // Melhor dia
+    let contagemDias = {};
+    mesDados.forEach(item => {
+        contagemDias[item.data] = (contagemDias[item.data] || 0) + 1;
+    });
+
+    let melhorDia = "-";
+    let maior = 0;
+
+    for (let dia in contagemDias) {
+        if (contagemDias[dia] > maior) {
+            maior = contagemDias[dia];
+            melhorDia = dia.split("-").reverse().join("/");
+        }
+    }
+
+    document.getElementById("dashTotal").innerText = totalMes;
+    document.getElementById("dashHoje").innerText = totalHoje;
+    document.getElementById("dashMelhor").innerText = melhorDia;
 }
+
+// ================================
+// 📊 RELATÓRIO
+// ================================
+
+function gerarRelatorio() {
+
+    const lista = document.getElementById("lista");
+    const total = document.getElementById("total");
+    const selectMes = document.getElementById("relMes");
+    const selectAno = document.getElementById("relAno");
+
+    // Preencher selects apenas uma vez
+    if (selectMes.options.length === 0) {
+
+        const meses = [
+            "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+            "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+        ];
+
+        meses.forEach((mes, index) => {
+            const option = document.createElement("option");
+            option.value = index;
+            option.text = mes;
+            selectMes.appendChild(option);
+        });
+
+        const anoAtual = new Date().getFullYear();
+
+        for (let i = anoAtual - 5; i <= anoAtual + 5; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.text = i;
+            selectAno.appendChild(option);
+        }
+
+        selectMes.value = new Date().getMonth();
+        selectAno.value = anoAtual;
+    }
+
+    const mes = parseInt(selectMes.value);
+    const ano = parseInt(selectAno.value);
+
+    lista.innerHTML = "";
+
+    // Filtrar por mês/ano
+    const filtrado = dados.filter(item => {
+        const d = new Date(item.data);
+        return d.getMonth() === mes && d.getFullYear() === ano;
+    });
+
+    // Ordenar crescente
+    const ordenado = filtrado.sort((a, b) => {
+        return new Date(a.data) - new Date(b.data);
+    });
+
+    total.innerHTML = `<strong>Total do mês:</strong> ${ordenado.length}`;
+
+    ordenado.forEach(item => {
+
+        const div = document.createElement("div");
+        div.className = "report-item";
+
+        div.innerHTML = `
+            ${item.data.split("-").reverse().join("/")} - ${item.cliente}
+            <button onclick="remover(${dados.indexOf(item)})"
+                    style="background:#e74c3c">X</button>
+        `;
+
+        lista.appendChild(div);
+    });
+}
+
+function remover(index) {
+    if (confirm("Deseja remover essa implantação?")) {
+        dados.splice(index, 1);
+        salvarLocal();
+        gerarRelatorio();
+        atualizarDashboard();
+    }
+}
+
+// ================================
+// 📆 CALENDÁRIO
+// ================================
+
+function gerarCalendario() {
+
+    const selectMes = document.getElementById("mes");
+    const selectAno = document.getElementById("ano");
+    const calendar = document.getElementById("calendar");
+
+    // Preencher selects apenas uma vez
+    if (selectMes.options.length === 0) {
+
+        const meses = [
+            "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+            "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+        ];
+
+        meses.forEach((mes, index) => {
+            const option = document.createElement("option");
+            option.value = index;
+            option.text = mes;
+            selectMes.appendChild(option);
+        });
+
+        const anoAtual = new Date().getFullYear();
+
+        for (let i = anoAtual - 5; i <= anoAtual + 5; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.text = i;
+            selectAno.appendChild(option);
+        }
+
+        selectMes.value = new Date().getMonth();
+        selectAno.value = anoAtual;
+    }
+
+    const mes = parseInt(selectMes.value);
+    const ano = parseInt(selectAno.value);
+
+    calendar.innerHTML = "";
+
+    const diasNoMes = new Date(ano, mes + 1, 0).getDate();
+
+    for (let dia = 1; dia <= diasNoMes; dia++) {
+
+        const dataFormatada =
+            `${ano}-${String(mes + 1).padStart(2,"0")}-${String(dia).padStart(2,"0")}`;
+
+        const div = document.createElement("div");
+        div.className = "day";
+
+        // Conta implantações naquele dia
+        const totalDia = dados.filter(item => item.data === dataFormatada).length;
+
+        if (totalDia > 0) {
+            div.classList.add("has");
+            div.innerHTML = `
+                <strong>${dia}</strong>
+                <div style="font-size:12px;margin-top:4px;">
+                   ( ${totalDia} )
+                </div>
+            `;
+        } else {
+            div.innerHTML = `<strong>${dia}</strong>`;
+        }
+
+        calendar.appendChild(div);
+    }
+}
+
+// ================================
+// 📈 GRÁFICO
+// ================================
+
+function gerarGrafico() {
+    const ctx = document.getElementById("grafico").getContext("2d");
+
+    const mesAtual = new Date().getMonth();
+    const anoAtual = new Date().getFullYear();
+    const diasNoMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
+
+    let contagem = new Array(diasNoMes).fill(0);
+
+    dados.forEach(item => {
+        const d = new Date(item.data);
+        if (d.getMonth() === mesAtual && d.getFullYear() === anoAtual) {
+            contagem[d.getDate() - 1]++;
+        }
+    });
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: contagem.map((_, i) => i + 1),
+            datasets: [{
+                label: "Implantações",
+                data: contagem
+            }]
+        }
+    });
+}
+
+// ================================
+// 📁 BACKUP JSON
+// ================================
+
+function exportar() {
+    const blob = new Blob([JSON.stringify(dados)], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "backup_implantacoes.json";
+    link.click();
+}
+
+function restaurarBackup(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        dados = JSON.parse(e.target.result);
+        salvarLocal();
+        alert("Backup restaurado com sucesso!");
+        atualizarDashboard();
+    };
+    reader.readAsText(file);
+}
+
+// ================================
+// 📄 EXPORTAR PDF
+// ================================
+
+function exportarPDF() {
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const selectMes = document.getElementById("relMes");
+    const selectAno = document.getElementById("relAno");
+
+    const mes = parseInt(selectMes.value);
+    const ano = parseInt(selectAno.value);
+
+    const meses = [
+        "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+        "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+    ];
+
+    // Filtrar dados do mês selecionado
+    const filtrado = dados
+        .filter(item => {
+            const d = new Date(item.data);
+            return d.getMonth() === mes && d.getFullYear() === ano;
+        })
+        .sort((a, b) => new Date(a.data) - new Date(b.data));
+
+    doc.setFontSize(16);
+    doc.text(`Relatório de Implantações`, 10, 15);
+
+    doc.setFontSize(12);
+    doc.text(`${meses[mes]} / ${ano}`, 10, 25);
+
+    doc.text(`Total: ${filtrado.length}`, 10, 35);
+
+    let y = 45;
+
+    filtrado.forEach(item => {
+
+        const dataBR = item.data.split("-").reverse().join("/");
+
+        doc.text(`${dataBR} - ${item.cliente}`, 10, y);
+        y += 8;
+
+        // Criar nova página se passar do limite
+        if (y > 280) {
+            doc.addPage();
+            y = 20;
+        }
+    });
+
+    doc.save(`relatorio_${meses[mes]}_${ano}.pdf`);
+}
+
+// ================================
+// 🚀 INICIALIZAÇÃO
+// ================================
+
+mostrarSecao("secInicio");
+atualizarDashboard();
