@@ -70,18 +70,22 @@ function atualizarDashboard(){
 // =============================
 
 function gerarRelatorio(){
+
     const lista = carregarImplantacoes();
     const filtro = document.getElementById("filtroMes")?.value;
 
     let filtrado = lista;
 
     if(filtro){
-        filtrado = lista.filter(item=> item.data.startsWith(filtro));
+        filtrado = lista.filter(item => item.data.startsWith(filtro));
     }
 
+    // Ordenar por data crescente
     filtrado.sort((a,b)=> a.data.localeCompare(b.data));
 
     const tabela = document.getElementById("tabelaRelatorio");
+    const totalEl = document.getElementById("totalMes");
+
     if(!tabela) return;
 
     tabela.innerHTML = `
@@ -99,6 +103,75 @@ function gerarRelatorio(){
             </tr>
         `;
     });
+
+    // 🔥 TOTAL DO MÊS
+    if(totalEl){
+        totalEl.innerText = `Total no mês: ${filtrado.length}`;
+    }
+}
+
+// =============================
+// BACKUP
+// =============================
+
+function exportarBackup(){
+
+    const dados = carregarImplantacoes();
+
+    const blob = new Blob(
+        [JSON.stringify(dados, null, 2)],
+        { type: "application/json" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "backup-implantacoes.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+function importarBackup(){
+
+    const input = document.getElementById("inputBackup");
+
+    input.click();
+
+    input.onchange = function(event){
+
+        const arquivo = event.target.files[0];
+
+        if(!arquivo) return;
+
+        const leitor = new FileReader();
+
+        leitor.onload = function(e){
+
+            try {
+
+                const dados = JSON.parse(e.target.result);
+
+                if(!Array.isArray(dados)){
+                    alert("Arquivo inválido!");
+                    return;
+                }
+
+                localStorage.setItem("implantacoes", JSON.stringify(dados));
+
+                alert("Backup restaurado com sucesso!");
+
+                location.reload();
+
+            } catch (erro){
+                alert("Erro ao restaurar backup.");
+            }
+
+        };
+
+        leitor.readAsText(arquivo);
+    };
 }
 
 // =============================

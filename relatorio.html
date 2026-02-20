@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Relatório</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<header>
-  <h1>📄 Relatório</h1>
-</header>
+    <header>
+        <h1>📄 Relatório</h1>
+    </header>
 
-<nav>
-  <a href="index.html">Dashboard</a>
-  <a href="nova.html">➕ Nova</a>
-  <a href="relatorio.html">📄 Relatório</a>
-</nav>
+    <nav>
+        <a href="index.html">Dashboard</a>
+        <a href="nova.html">➕ Nova</a>
+        <a href="relatorio.html">📄 Relatório</a>
+    </nav>
 
-<main>
-  <div class="card">
-    <input type="month" id="filtroMes" onchange="gerarRelatorio()">
-    <table id="tabelaRelatorio"></table>
-    <button onclick="window.print()">Exportar PDF</button>
-  </div>
-</main>
+    <main>
+        <div class="card">
+            <input type="month" id="filtroMes" onchange="gerarRelatorio()">
 
-<script src="script.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", gerarRelatorio);
-</script>
+            <p id="totalMes" style="font-weight:bold; margin-top:10px;"></p>
+
+            <table id="tabelaRelatorio"></table>
+
+            <button onclick="window.print()">Exportar PDF</button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", gerarRelatorio);
+    </script>
 
 </body>
+
 </html>
