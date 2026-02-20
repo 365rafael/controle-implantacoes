@@ -174,3 +174,19 @@ th {
 #tabelaRelatorio td button:last-child {
   margin-right: 0;
 }
+
+.acoes {
+  display: flex;
+  flex-direction: row;     /* sempre horizontal */
+  justify-content: center; /* centraliza */
+  align-items: center;
+  gap: 8px;                /* espaço entre eles */
+  flex-wrap: nowrap;       /* NÃO deixa quebrar linha */
+}
+
+#tabelaRelatorio button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 14px;
+}

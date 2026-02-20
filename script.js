@@ -17,13 +17,13 @@ function salvarNoStorage(lista) {
 function definirDataHoje() {
     const hoje = new Date();
     const ano = hoje.getFullYear();
-    const mes = String(hoje.getMonth()+1).padStart(2,"0");
-    const dia = String(hoje.getDate()).padStart(2,"0");
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoje.getDate()).padStart(2, "0");
     const campo = document.getElementById("data");
-    if(campo) campo.value = `${ano}-${mes}-${dia}`;
+    if (campo) campo.value = `${ano}-${mes}-${dia}`;
 }
 
-function formatarDataBR(dataISO){
+function formatarDataBR(dataISO) {
     const partes = dataISO.split("-");
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
@@ -32,14 +32,14 @@ function formatarDataBR(dataISO){
 // SALVAR
 // =============================
 
-function salvarImplantacao(){
+function salvarImplantacao() {
     const data = document.getElementById("data").value;
     const cliente = document.getElementById("cliente").value;
 
-    if(!data || !cliente) return alert("Preencha todos os campos");
+    if (!data || !cliente) return alert("Preencha todos os campos");
 
     const lista = carregarImplantacoes();
-    lista.push({data, cliente});
+    lista.push({ data, cliente });
     salvarNoStorage(lista);
 
     alert("Salvo!");
@@ -50,26 +50,26 @@ function salvarImplantacao(){
 // DASHBOARD
 // =============================
 
-function atualizarDashboard(){
+function atualizarDashboard() {
     const lista = carregarImplantacoes();
     const hoje = new Date();
-    const mesAtual = hoje.getMonth()+1;
+    const mesAtual = hoje.getMonth() + 1;
     const anoAtual = hoje.getFullYear();
 
-    const total = lista.filter(item=>{
+    const total = lista.filter(item => {
         const partes = item.data.split("-");
-        return Number(partes[1])===mesAtual && Number(partes[0])===anoAtual;
+        return Number(partes[1]) === mesAtual && Number(partes[0]) === anoAtual;
     }).length;
 
     const el = document.getElementById("resumoMes");
-    if(el) el.innerText = `Total este mês: ${total}`;
+    if (el) el.innerText = `Total este mês: ${total}`;
 }
 
 // =============================
 // RELATÓRIO
 // =============================
 
-function gerarRelatorio(){
+function gerarRelatorio() {
 
     const lista = carregarImplantacoes();
     const filtro = document.getElementById("filtroMes")?.value;
@@ -79,16 +79,16 @@ function gerarRelatorio(){
         indexOriginal: index
     }));
 
-    if(filtro){
+    if (filtro) {
         filtrado = filtrado.filter(item => item.data.startsWith(filtro));
     }
 
-    filtrado.sort((a,b)=> a.data.localeCompare(b.data));
+    filtrado.sort((a, b) => a.data.localeCompare(b.data));
 
     const tabela = document.getElementById("tabelaRelatorio");
     const totalEl = document.getElementById("totalMes");
 
-    if(!tabela) return;
+    if (!tabela) return;
 
     tabela.innerHTML = `
         <tr>
@@ -98,20 +98,20 @@ function gerarRelatorio(){
         </tr>
     `;
 
-    filtrado.forEach(item=>{
+    filtrado.forEach(item => {
         tabela.innerHTML += `
             <tr>
                 <td>${formatarDataBR(item.data)}</td>
                 <td>${item.cliente}</td>
-                <td>
-                  <button class="btn-editar" onclick="editarRegistro(${item.indexOriginal})">✏</button>
-<button class="btn-excluir" onclick="excluirRegistro(${item.indexOriginal})">🗑</button>
-                </td>
+                <td class="acoes">
+  <button class="btn-editar" onclick="editarRegistro(${item.indexOriginal})">✏</button>
+  <button class="btn-excluir" onclick="excluirRegistro(${item.indexOriginal})">🗑</button>
+</td>
             </tr>
         `;
     });
 
-    if(totalEl){
+    if (totalEl) {
         totalEl.innerText = `Total no mês: ${filtrado.length}`;
     }
 }
@@ -120,16 +120,16 @@ function gerarRelatorio(){
 // Excluir e Editar
 // =============================
 
-function editarRegistro(index){
+function editarRegistro(index) {
 
     const lista = carregarImplantacoes();
     const item = lista[index];
 
     const novaData = prompt("Editar data (YYYY-MM-DD):", item.data);
-    if(!novaData) return;
+    if (!novaData) return;
 
     const novoCliente = prompt("Editar cliente:", item.cliente);
-    if(!novoCliente) return;
+    if (!novoCliente) return;
 
     lista[index] = {
         data: novaData,
@@ -141,9 +141,9 @@ function editarRegistro(index){
     gerarRelatorio();
 }
 
-function excluirRegistro(index){
+function excluirRegistro(index) {
 
-    if(!confirm("Deseja realmente excluir este registro?")) return;
+    if (!confirm("Deseja realmente excluir este registro?")) return;
 
     const lista = carregarImplantacoes();
     lista.splice(index, 1);
@@ -156,7 +156,7 @@ function excluirRegistro(index){
 // BACKUP
 // =============================
 
-function exportarBackup(){
+function exportarBackup() {
 
     const dados = carregarImplantacoes();
 
@@ -175,27 +175,27 @@ function exportarBackup(){
     URL.revokeObjectURL(url);
 }
 
-function importarBackup(){
+function importarBackup() {
 
     const input = document.getElementById("inputBackup");
 
     input.click();
 
-    input.onchange = function(event){
+    input.onchange = function (event) {
 
         const arquivo = event.target.files[0];
 
-        if(!arquivo) return;
+        if (!arquivo) return;
 
         const leitor = new FileReader();
 
-        leitor.onload = function(e){
+        leitor.onload = function (e) {
 
             try {
 
                 const dados = JSON.parse(e.target.result);
 
-                if(!Array.isArray(dados)){
+                if (!Array.isArray(dados)) {
                     alert("Arquivo inválido!");
                     return;
                 }
@@ -206,7 +206,7 @@ function importarBackup(){
 
                 location.reload();
 
-            } catch (erro){
+            } catch (erro) {
                 alert("Erro ao restaurar backup.");
             }
 
@@ -220,14 +220,14 @@ function importarBackup(){
 // CALENDÁRIO SIMPLES
 // =============================
 
-function gerarCalendario(){
+function gerarCalendario() {
     const div = document.getElementById("calendario");
-    if(!div) return;
+    if (!div) return;
 
     const lista = carregarImplantacoes();
     div.innerHTML = "";
 
-    lista.forEach(item=>{
+    lista.forEach(item => {
         div.innerHTML += `
             <p>${formatarDataBR(item.data)} - ${item.cliente}</p>
         `;
@@ -235,5 +235,5 @@ function gerarCalendario(){
 }
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
+    navigator.serviceWorker.register("sw.js");
 }
