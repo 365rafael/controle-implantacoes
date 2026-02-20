@@ -155,7 +155,8 @@ th {
 
 /* Botão excluir */
 .btn-excluir {
-  color: #c0392b;
+  background: #e74c3c;
+  color: white;
   border: none;
 }
 
