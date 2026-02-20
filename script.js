@@ -118,3 +118,7 @@ function gerarCalendario(){
         `;
     });
 }
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}

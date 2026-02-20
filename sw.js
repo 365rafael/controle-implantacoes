@@ -1,7 +1,13 @@
-const CACHE_NAME = "implantacoes-v2";
+const CACHE_NAME = "implantacoes-v3";
+
 const urlsToCache = [
   "./",
   "./index.html",
+  "./nova.html",
+  "./agenda.html",
+  "./relatorio.html",
+  "./style.css",
+  "./script.js",
   "./manifest.json"
 ];
 

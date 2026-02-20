@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Relatório</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -14,15 +15,16 @@
 <nav>
   <a href="index.html">Dashboard</a>
   <a href="nova.html">➕ Nova</a>
-  <a href="agenda.html">📅 Agenda</a>
   <a href="relatorio.html">📄 Relatório</a>
 </nav>
 
-<section>
-  <input type="month" id="filtroMes" onchange="gerarRelatorio()">
-  <table id="tabelaRelatorio"></table>
-  <button onclick="exportarPDF()">Exportar PDF</button>
-</section>
+<main>
+  <div class="card">
+    <input type="month" id="filtroMes" onchange="gerarRelatorio()">
+    <table id="tabelaRelatorio"></table>
+    <button onclick="window.print()">Exportar PDF</button>
+  </div>
+</main>
 
 <script src="script.js"></script>
 <script>

@@ -1,209 +1,116 @@
-/* ========================= */
-/* BASE */
-/* ========================= */
+/* RESET */
+* {
+  box-sizing: border-box;
+}
 
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 15px;
-    background: #f5f6fa;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f6fa;
 }
 
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
+/* HEADER */
+header {
+  background: #2e86de;
+  color: white;
+  padding: 15px;
+  text-align: center;
 }
 
-h2, h3 {
-    margin-top: 0;
+/* MENU */
+nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #1e3799;
+  padding: 10px 5px;
 }
 
-/* ========================= */
-/* CARDS */
-/* ========================= */
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.2s;
+}
 
+nav a:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* CONTEÚDO */
+main {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+/* CARD */
 .card {
-    background: #ffffff;
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
 }
 
-/* ========================= */
-/* BOTÕES */
-/* ========================= */
+/* INPUTS */
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  font-size: 16px;
+  border-radius: 8px;
+}
 
+input {
+  border: 1px solid #ccc;
+}
+
+/* BOTÃO */
 button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    background: #2e86de;
-    color: #ffffff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
+  background: #2e86de;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
 }
 
 button:hover {
-    opacity: 0.9;
+  background: #1e3799;
 }
 
-.btn-principal {
-    width: 100%;
-    margin-top: 15px;
-    padding: 12px;
-    font-size: 16px;
-    background: #2e86de;
-    color: #fff;
-    border-radius: 10px;
+/* TABELA */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
 }
 
-.btn-secundario {
-    width: 100%;
-    margin-top: 10px;
-    padding: 12px;
-    font-size: 16px;
-    background: #e0e0e0;
-    color: #333;
-    border-radius: 10px;
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
 }
 
-/* ========================= */
-/* INPUTS */
-/* ========================= */
-
-input,
-select {
-    padding: 10px;
-    width: 100%;
-    margin: 5px 0 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 14px;
+th {
+  background: #f0f0f0;
 }
 
-/* ========================= */
-/* CALENDÁRIO */
-/* ========================= */
-
-#calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-    margin-top: 10px;
-}
-
-.day {
-    position: relative;
-    padding: 8px;
-    text-align: center;
-    border-radius: 10px;
-    min-height: 60px;
-    background: #f2f4f7;
-    font-size: 14px;
-}
-
-.has {
-    background: #dff9fb;
-    border: 2px solid #2e86de;
-}
-
-/* ========================= */
-/* RELATÓRIO */
-/* ========================= */
-
-.report-item {
-    border-bottom: 1px solid #eee;
-    padding: 6px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* ========================= */
-/* DASHBOARD */
-/* ========================= */
-
-.dashboard-box {
-    display: flex;
-    justify-content: space-between;
-    margin: 15px 0;
-}
-
-.dashboard-box div {
-    flex: 1;
-    margin: 5px;
-    padding: 18px;
-    background: #f4f6f8;
-    border-radius: 12px;
-    text-align: center;
-}
-
-.dashboard-box h3 {
-    margin: 0;
-    font-size: 22px;
-    color: #2e86de;
-}
-
-/* ========================= */
-/* GRÁFICO */
-/* ========================= */
-
-canvas {
-    width: 100%;
-    margin-top: 10px;
-}
-
-/* ========================= */
-/* NAVEGAÇÃO INFERIOR */
-/* ========================= */
-
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    background: #ffffff;
-    border-top: 1px solid #ddd;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-}
-
-.bottom-nav button {
-    flex: 1;
-    background: none;
-    border: none;
-    padding: 10px 0;
-    font-size: 13px;
-    color: #2e86de;
-    font-weight: bold;
-}
-
-/* Espaço para não cobrir conteúdo */
-body {
-    padding-bottom: 80px;
-}
-
-/* ========================= */
-/* CONTROLE DE SEÇÕES */
-/* ========================= */
-
-#secInicio,
-#secNovo,
-#secAgenda,
-#secRelatorio,
-#secGrafico {
-    display: none;
-}
-
-/* ========================= */
 /* RESPONSIVO */
-/* ========================= */
+@media (max-width: 600px) {
 
-@media (min-width: 768px) {
-    body {
-        max-width: 700px;
-        margin: auto;
-    }
+  nav {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  nav a {
+    flex: 1 1 45%;
+    text-align: center;
+  }
+
 }
