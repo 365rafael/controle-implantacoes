@@ -2,13 +2,13 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard - Implantações</title>
+  <title>Relatório</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-  <h1>📊 Dashboard</h1>
+  <h1>📄 Relatório</h1>
 </header>
 
 <nav>
@@ -19,13 +19,14 @@
 </nav>
 
 <section>
-  <h2>Implantações do mês</h2>
-  <p id="resumoMes"></p>
+  <input type="month" id="filtroMes" onchange="gerarRelatorio()">
+  <table id="tabelaRelatorio"></table>
+  <button onclick="exportarPDF()">Exportar PDF</button>
 </section>
 
 <script src="script.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", atualizarDashboard);
+document.addEventListener("DOMContentLoaded", gerarRelatorio);
 </script>
 
 </body>

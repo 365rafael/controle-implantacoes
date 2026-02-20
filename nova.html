@@ -2,13 +2,13 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard - Implantações</title>
+  <title>Nova Implantação</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-  <h1>📊 Dashboard</h1>
+  <h1>➕ Nova Implantação</h1>
 </header>
 
 <nav>
@@ -19,13 +19,14 @@
 </nav>
 
 <section>
-  <h2>Implantações do mês</h2>
-  <p id="resumoMes"></p>
+  <input type="date" id="data">
+  <input type="text" id="cliente" placeholder="Cliente">
+  <button onclick="salvarImplantacao()">Salvar</button>
 </section>
 
 <script src="script.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", atualizarDashboard);
+document.addEventListener("DOMContentLoaded", definirDataHoje);
 </script>
 
 </body>
