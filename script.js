@@ -248,7 +248,16 @@ function gerarCalendario() {
 // ================================
 
 function gerarGrafico() {
-    const ctx = document.getElementById("grafico").getContext("2d");
+
+    if (typeof Chart === "undefined") {
+        console.warn("Chart.js não carregou.");
+        return;
+    }
+
+    const canvas = document.getElementById("grafico");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
 
     const mesAtual = new Date().getMonth();
     const anoAtual = new Date().getFullYear();
@@ -360,14 +369,20 @@ function exportarPDF() {
 // 🚀 INICIALIZAÇÃO
 // ================================
 
-mostrarSecao("secInicio");
-atualizarDashboard();
-
 document.addEventListener("DOMContentLoaded", function() {
-    try {
-        mostrarSecao("secInicio");
-        atualizarDashboard();
-    } catch (erro) {
-        console.error("Erro ao iniciar:", erro);
+
+    // Data padrão no input
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoje.getDate()).padStart(2, "0");
+
+    const inputData = document.getElementById("data");
+    if (inputData) {
+        inputData.value = `${ano}-${mes}-${dia}`;
     }
+
+    mostrarSecao("secInicio");
+    atualizarDashboard();
+
 });
