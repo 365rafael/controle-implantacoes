@@ -104,8 +104,8 @@ function gerarRelatorio(){
                 <td>${formatarDataBR(item.data)}</td>
                 <td>${item.cliente}</td>
                 <td>
-                    <button onclick="editarRegistro(${item.indexOriginal})">✏</button>
-                    <button onclick="excluirRegistro(${item.indexOriginal})">🗑</button>
+                  <button class="btn-editar" onclick="editarRegistro(${item.indexOriginal})">✏</button>
+<button class="btn-excluir" onclick="excluirRegistro(${item.indexOriginal})">🗑</button>
                 </td>
             </tr>
         `;

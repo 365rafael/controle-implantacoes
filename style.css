@@ -145,3 +145,22 @@ th {
   font-size: 12px;
   border-radius: 4px;
 }
+
+/* Botão editar */
+.btn-editar {
+  background: #f1c40f;
+  color: black;
+  border: none;
+}
+
+/* Botão excluir */
+.btn-excluir {
+  background: #e74c3c;
+  color: white;
+  border: none;
+}
+
+/* Hover excluir */
+.btn-excluir:hover {
+  background: #c0392b;
+}
