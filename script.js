@@ -362,3 +362,12 @@ function exportarPDF() {
 
 mostrarSecao("secInicio");
 atualizarDashboard();
+
+document.addEventListener("DOMContentLoaded", function() {
+    try {
+        mostrarSecao("secInicio");
+        atualizarDashboard();
+    } catch (erro) {
+        console.error("Erro ao iniciar:", erro);
+    }
+});
