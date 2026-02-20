@@ -114,3 +114,34 @@ th {
   }
 
 }
+
+/* ============================= */
+/* RELATÓRIO COMPACTO */
+/* ============================= */
+
+#tabelaRelatorio {
+  font-size: 14px;
+}
+
+#tabelaRelatorio th,
+#tabelaRelatorio td {
+  padding: 6px 8px;
+}
+
+#tabelaRelatorio th {
+  background: #f2f2f2;
+  font-size: 13px;
+}
+
+#tabelaRelatorio td {
+  font-size: 13px;
+}
+
+/* Botões menores dentro da tabela */
+#tabelaRelatorio button {
+  width: auto;
+  padding: 4px 6px;
+  margin: 0 2px;
+  font-size: 12px;
+  border-radius: 4px;
+}
