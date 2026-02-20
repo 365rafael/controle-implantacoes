@@ -4,17 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Controle de Implantações</title>
-<style>
-body{font-family:Arial;margin:0;padding:15px;background:#f5f6fa}
-h1{text-align:center}
-.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:20px;box-shadow:0 0 10px rgba(0,0,0,.08)}
-button{padding:10px 15px;border:none;border-radius:8px;background:#2e86de;color:#fff;font-weight:bold;cursor:pointer}
-input,select{padding:10px;width:100%;margin:5px 0 10px;border-radius:8px;border:1px solid #ccc}
-#calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-.day{background:#fafafa;border-radius:8px;padding:8px;text-align:center;font-size:14px}
-.has{background:#dff9fb;font-weight:bold}
-.report-item{border-bottom:1px solid #eee;padding:5px 0}
-</style>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2e86de">
 </head>
 <body>
 
@@ -26,6 +18,14 @@ input,select{padding:10px;width:100%;margin:5px 0 10px;border-radius:8px;border:
 <input type="date" id="data" />
 <button onclick="salvar()">Salvar</button>
 <button onclick="exportar()" style="background:#27ae60;margin-left:10px">Exportar Backup</button>
+<button onclick="document.getElementById('fileInput').click()" 
+        style="background:#8e44ad;margin-left:10px">
+📂 Restaurar Backup
+</button>
+
+<input type="file" id="fileInput" accept=".json" 
+       style="display:none" 
+       onchange="restaurarBackup(event)">
 </div>
 
 <div class="card">
@@ -37,89 +37,19 @@ input,select{padding:10px;width:100%;margin:5px 0 10px;border-radius:8px;border:
 
 <div class="card">
 <h3>📊 Relatório Mensal</h3>
+<button onclick="exportarPDF()" style="background:#e67e22;margin-bottom:10px">
+📄 Exportar Relatório em PDF
+</button>
 <div id="total"></div>
 <div id="lista"></div>
 </div>
 
-<script>
-const STORAGE='implantacoes';
-const hoje=new Date();
-document.getElementById('data').value=hoje.toISOString().substr(0,10);
+<div class="card">
+  <h3>📊 Gráfico Mensal</h3>
+  <canvas id="grafico" height="100"></canvas>
+</div>
 
-function dados(){return JSON.parse(localStorage.getItem(STORAGE)||'[]')}
-function salvar(){
- const cliente=document.getElementById('cliente').value.trim();
- const data=document.getElementById('data').value;
- if(!cliente||!data) return alert('Preencha os dados');
- const arr=dados();
- arr.push({cliente,data});
- localStorage.setItem(STORAGE,JSON.stringify(arr));
- document.getElementById('cliente').value='';
- gerarCalendario();
-}
-
-function exportar(){
- const blob=new Blob([JSON.stringify(dados(),null,2)],{type:'application/json'});
- const a=document.createElement('a');
- a.href=URL.createObjectURL(blob);
- a.download='backup_implantacoes.json';
- a.click();
-}
-
-function popularSelects(){
- const mes=document.getElementById('mes');
- const ano=document.getElementById('ano');
- for(let i=0;i<12;i++){
-  const op=document.createElement('option');
-  op.value=i;op.text=i+1;
-  if(i===hoje.getMonth())op.selected=true;
-  mes.appendChild(op);
- }
- for(let a=2024;a<=2030;a++){
-  const op=document.createElement('option');
-  op.value=a;op.text=a;
-  if(a===hoje.getFullYear())op.selected=true;
-  ano.appendChild(op);
- }
-}
-
-function gerarCalendario(){
- const mes=parseInt(document.getElementById('mes').value);
- const ano=parseInt(document.getElementById('ano').value);
- const cal=document.getElementById('calendar');
- cal.innerHTML='';
- const totalDias=new Date(ano,mes+1,0).getDate();
- const arr=dados();
- for(let d=1;d<=totalDias;d++){
-  const data=`${ano}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  const count=arr.filter(x=>x.data===data).length;
-  const div=document.createElement('div');
-  div.className='day'+(count?' has':'');
-  div.innerHTML=`${d}<br>${count?count+' impl.':''}`;
-  cal.appendChild(div);
- }
- gerarRelatorio(mes,ano);
-}
-
-function gerarRelatorio(mes,ano){
- const arr=dados().filter(x=>{
-  const dt=new Date(x.data);
-  return dt.getMonth()===mes && dt.getFullYear()===ano;
- });
- document.getElementById('total').innerHTML=`<b>Total no mês: ${arr.length}</b>`;
- const lista=document.getElementById('lista');
- lista.innerHTML='';
- arr.forEach(x=>{
-  const d=document.createElement('div');
-  d.className='report-item';
-  d.textContent=`${x.data} - ${x.cliente}`;
-  lista.appendChild(d);
- });
-}
-
-popularSelects();
-gerarCalendario();
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
