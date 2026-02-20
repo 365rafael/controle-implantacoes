@@ -74,13 +74,15 @@ function gerarRelatorio(){
     const lista = carregarImplantacoes();
     const filtro = document.getElementById("filtroMes")?.value;
 
-    let filtrado = lista;
+    let filtrado = lista.map((item, index) => ({
+        ...item,
+        indexOriginal: index
+    }));
 
     if(filtro){
-        filtrado = lista.filter(item => item.data.startsWith(filtro));
+        filtrado = filtrado.filter(item => item.data.startsWith(filtro));
     }
 
-    // Ordenar por data crescente
     filtrado.sort((a,b)=> a.data.localeCompare(b.data));
 
     const tabela = document.getElementById("tabelaRelatorio");
@@ -92,6 +94,7 @@ function gerarRelatorio(){
         <tr>
             <th>Data</th>
             <th>Cliente</th>
+            <th>Ações</th>
         </tr>
     `;
 
@@ -100,14 +103,53 @@ function gerarRelatorio(){
             <tr>
                 <td>${formatarDataBR(item.data)}</td>
                 <td>${item.cliente}</td>
+                <td>
+                    <button onclick="editarRegistro(${item.indexOriginal})">✏</button>
+                    <button onclick="excluirRegistro(${item.indexOriginal})">🗑</button>
+                </td>
             </tr>
         `;
     });
 
-    // 🔥 TOTAL DO MÊS
     if(totalEl){
         totalEl.innerText = `Total no mês: ${filtrado.length}`;
     }
+}
+
+// =============================
+// Excluir e Editar
+// =============================
+
+function editarRegistro(index){
+
+    const lista = carregarImplantacoes();
+    const item = lista[index];
+
+    const novaData = prompt("Editar data (YYYY-MM-DD):", item.data);
+    if(!novaData) return;
+
+    const novoCliente = prompt("Editar cliente:", item.cliente);
+    if(!novoCliente) return;
+
+    lista[index] = {
+        data: novaData,
+        cliente: novoCliente
+    };
+
+    salvarNoStorage(lista);
+
+    gerarRelatorio();
+}
+
+function excluirRegistro(index){
+
+    if(!confirm("Deseja realmente excluir este registro?")) return;
+
+    const lista = carregarImplantacoes();
+    lista.splice(index, 1);
+    salvarNoStorage(lista);
+
+    gerarRelatorio();
 }
 
 // =============================
