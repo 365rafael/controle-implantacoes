@@ -1,38 +1,76 @@
-const STORAGE='implantacoes';
-const hoje=new Date();
-document.getElementById('data').value=hoje.toISOString().substr(0,10);
+const STORAGE = 'implantacoes';
 
+// =========================
+// DATA ATUAL (input)
+// =========================
+const hoje = new Date();
+const anoHoje = hoje.getFullYear();
+const mesHoje = String(hoje.getMonth() + 1).padStart(2,'0');
+const diaHoje = String(hoje.getDate()).padStart(2,'0');
+
+document.getElementById('data').value = `${anoHoje}-${mesHoje}-${diaHoje}`;
+
+
+// =========================
+// FORMATAR DATA BR (SEM TIMEZONE)
+// =========================
 function formatarDataBR(dataISO){
-
-  const dt = new Date(dataISO);
-
-  const dia = String(dt.getDate()).padStart(2,'0');
-  const mes = String(dt.getMonth()+1).padStart(2,'0');
-  const ano = dt.getFullYear();
-
+  const [ano, mes, dia] = dataISO.split('-');
   return `${dia}-${mes}-${ano}`;
 }
 
-function dados(){return JSON.parse(localStorage.getItem(STORAGE)||'[]')}
+
+// =========================
+// LOCAL STORAGE
+// =========================
+function dados(){
+  return JSON.parse(localStorage.getItem(STORAGE) || '[]');
+}
+
+
+// =========================
+// SALVAR
+// =========================
 function salvar(){
- const cliente=document.getElementById('cliente').value.trim();
- const data=document.getElementById('data').value;
- if(!cliente||!data) return alert('Preencha os dados');
- const arr=dados();
- arr.push({cliente,data});
- localStorage.setItem(STORAGE,JSON.stringify(arr));
- document.getElementById('cliente').value='';
- gerarCalendario();
+
+  const cliente = document.getElementById('cliente').value.trim();
+  const data = document.getElementById('data').value;
+
+  if(!cliente || !data){
+    alert('Preencha os dados');
+    return;
+  }
+
+  const arr = dados();
+  arr.push({cliente, data});
+
+  localStorage.setItem(STORAGE, JSON.stringify(arr));
+
+  document.getElementById('cliente').value='';
+
+  gerarCalendario();
 }
 
+
+// =========================
+// EXPORTAR BACKUP
+// =========================
 function exportar(){
- const blob=new Blob([JSON.stringify(dados(),null,2)],{type:'application/json'});
- const a=document.createElement('a');
- a.href=URL.createObjectURL(blob);
- a.download='backup_implantacoes.json';
- a.click();
+
+  const blob = new Blob([JSON.stringify(dados(),null,2)],{
+    type:'application/json'
+  });
+
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='backup_implantacoes.json';
+  a.click();
 }
 
+
+// =========================
+// RESTAURAR BACKUP
+// =========================
 function restaurarBackup(event){
 
   const arquivo = event.target.files[0];
@@ -56,17 +94,19 @@ function restaurarBackup(event){
 
       gerarCalendario();
 
-    }catch(erro){
-      alert("Erro ao restaurar backup. Arquivo inválido.");
+    }catch{
+      alert("Erro ao restaurar backup.");
     }
   };
 
   reader.readAsText(arquivo);
-
-  // limpa input para poder importar o mesmo arquivo novamente
   event.target.value = "";
 }
 
+
+// =========================
+// REMOVER LANÇAMENTO
+// =========================
 function remover(indexGlobal){
 
   if(!confirm("Deseja realmente remover este lançamento?")) return;
@@ -79,42 +119,68 @@ function remover(indexGlobal){
   gerarCalendario();
 }
 
+
+// =========================
+// SELECTS MÊS / ANO
+// =========================
 function popularSelects(){
- const mes=document.getElementById('mes');
- const ano=document.getElementById('ano');
- for(let i=0;i<12;i++){
-  const op=document.createElement('option');
-  op.value=i;op.text=i+1;
-  if(i===hoje.getMonth())op.selected=true;
-  mes.appendChild(op);
- }
- for(let a=2024;a<=2030;a++){
-  const op=document.createElement('option');
-  op.value=a;op.text=a;
-  if(a===hoje.getFullYear())op.selected=true;
-  ano.appendChild(op);
- }
+
+  const mes = document.getElementById('mes');
+  const ano = document.getElementById('ano');
+
+  for(let i=0;i<12;i++){
+    const op=document.createElement('option');
+    op.value=i;
+    op.text=i+1;
+    if(i===hoje.getMonth()) op.selected=true;
+    mes.appendChild(op);
+  }
+
+  for(let a=2024;a<=2030;a++){
+    const op=document.createElement('option');
+    op.value=a;
+    op.text=a;
+    if(a===hoje.getFullYear()) op.selected=true;
+    ano.appendChild(op);
+  }
 }
 
+
+// =========================
+// CALENDÁRIO
+// =========================
 function gerarCalendario(){
- const mes=parseInt(document.getElementById('mes').value);
- const ano=parseInt(document.getElementById('ano').value);
- const cal=document.getElementById('calendar');
- cal.innerHTML='';
- const totalDias=new Date(ano,mes+1,0).getDate();
- const arr=dados();
- for(let d=1;d<=totalDias;d++){
-  const data=`${ano}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  const count=arr.filter(x=>x.data===data).length;
-  const div=document.createElement('div');
-  div.className='day'+(count?' has':'');
-  div.innerHTML=`${d}<br>${count?count+' impl.':''}`;
-  cal.appendChild(div);
- }
-gerarRelatorio(mes,ano);
-gerarGrafico(mes,ano);
+
+  const mes = parseInt(document.getElementById('mes').value);
+  const ano = parseInt(document.getElementById('ano').value);
+
+  const cal=document.getElementById('calendar');
+  cal.innerHTML='';
+
+  const totalDias=new Date(ano,mes+1,0).getDate();
+  const arr=dados();
+
+  for(let d=1;d<=totalDias;d++){
+
+    const data = `${ano}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+
+    const count = arr.filter(x=>x.data===data).length;
+
+    const div=document.createElement('div');
+    div.className='day'+(count?' has':'');
+    div.innerHTML=`${d}<br>${count?count+' impl.':''}`;
+
+    cal.appendChild(div);
+  }
+
+  gerarRelatorio(mes,ano);
+  gerarGrafico(mes,ano);
 }
 
+
+// =========================
+// RELATÓRIO
+// =========================
 function gerarRelatorio(mes,ano){
 
   const arrCompleto = dados();
@@ -122,10 +188,10 @@ function gerarRelatorio(mes,ano){
   const arrFiltrado = arrCompleto
     .map((item,index)=>({ ...item, index }))
     .filter(x=>{
-      const dt=new Date(x.data);
-      return dt.getMonth()===mes && dt.getFullYear()===ano;
+      const [anoItem, mesItem] = x.data.split('-');
+      return parseInt(mesItem)-1 === mes && parseInt(anoItem) === ano;
     })
-    .sort((a,b)=> new Date(a.data) - new Date(b.data));
+    .sort((a,b)=> a.data.localeCompare(b.data));
 
   document.getElementById('total').innerHTML=
     `<b>Total no mês: ${arrFiltrado.length}</b>`;
@@ -140,7 +206,7 @@ function gerarRelatorio(mes,ano){
 
     d.innerHTML=`
       ${formatarDataBR(x.data)} - ${x.cliente}
-      <button onclick="remover(${x.index})" 
+      <button onclick="remover(${x.index})"
               style="background:#e74c3c;
                      margin-left:10px;
                      padding:5px 8px;
@@ -153,19 +219,22 @@ function gerarRelatorio(mes,ano){
   });
 }
 
+
+// =========================
+// GRÁFICO
+// =========================
 function gerarGrafico(mes,ano){
 
   const arr = dados()
     .filter(x=>{
-      const dt=new Date(x.data);
-      return dt.getMonth()===mes && dt.getFullYear()===ano;
+      const [anoItem, mesItem] = x.data.split('-');
+      return parseInt(mesItem)-1 === mes && parseInt(anoItem) === ano;
     });
 
-  // Agrupa por dia
   const mapa = {};
 
   arr.forEach(x=>{
-    const dia = new Date(x.data).getDate();
+    const dia = parseInt(x.data.split('-')[2]);
     mapa[dia] = (mapa[dia] || 0) + 1;
   });
 
@@ -201,7 +270,6 @@ function gerarGrafico(mes,ano){
     const xCentro = i * larguraBarra + larguraBarra/2;
     const yBarra = canvas.height - altura - 40;
 
-    // Barra
     ctx.fillStyle = '#2e86de';
     ctx.fillRect(
       i * larguraBarra + 10,
@@ -210,21 +278,20 @@ function gerarGrafico(mes,ano){
       altura
     );
 
-    // Quantidade acima
     ctx.fillStyle = "#000";
     ctx.fillText(valor, xCentro, yBarra - 5);
 
-    // Dia abaixo
-ctx.fillStyle = "#000";
-ctx.fillText(valor, xCentro, yBarra - 5);
+    const mesFormatado = String(mes + 1).padStart(2,'0');
+    const diaFormatado = String(dia).padStart(2,'0');
 
-const mesFormatado = String(mes + 1).padStart(2,'0');
-const diaFormatado = String(dia).padStart(2,'0');
-
-ctx.fillText(`${diaFormatado}/${mesFormatado}`, xCentro, canvas.height - 15);
+    ctx.fillText(`${diaFormatado}/${mesFormatado}`, xCentro, canvas.height - 15);
   });
 }
 
+
+// =========================
+// EXPORTAR PDF
+// =========================
 function exportarPDF(){
 
   const mesIndex = parseInt(document.getElementById('mes').value);
@@ -233,32 +300,29 @@ function exportarPDF(){
 
   const arr = dados()
     .filter(x=>{
-      const dt=new Date(x.data);
-      return dt.getMonth()===mesIndex && dt.getFullYear()===ano;
+      const [anoItem, mesItem] = x.data.split('-');
+      return parseInt(mesItem)-1 === mesIndex && parseInt(anoItem) === ano;
     })
-    .sort((a,b)=> new Date(a.data) - new Date(b.data));
+    .sort((a,b)=> a.data.localeCompare(b.data));
 
   const tela = window.open('', '', 'width=800,height=600');
 
-  tela.document.write('<html>');
-  tela.document.write('<head>');
-  tela.document.write('<title>Relatório de Implantações</title>');
+  tela.document.write('<html><head>');
+  tela.document.write('<title>Relatório</title>');
   tela.document.write('<style>');
   tela.document.write('body{font-family:Arial;padding:30px}');
-  tela.document.write('h2{text-align:center}');
   tela.document.write('.item{border-bottom:1px solid #ccc;padding:6px 0}');
-  tela.document.write('.total{margin-top:15px;font-size:18px;font-weight:bold}');
   tela.document.write('</style>');
-  tela.document.write('</head>');
-  tela.document.write('<body>');
+  tela.document.write('</head><body>');
 
   tela.document.write('<h2>Relatório de Implantações</h2>');
   tela.document.write('<p>Mês: '+ mes +'/'+ ano +'</p>');
-  tela.document.write('<div class="total">Total no mês: '+ arr.length +'</div>');
-  tela.document.write('<hr>');
+  tela.document.write('<b>Total no mês: '+ arr.length +'</b><hr>');
 
   arr.forEach(x=>{
-    tela.document.write('<div class="item">'+ x.data +' - '+ x.cliente +'</div>');
+    tela.document.write('<div class="item">'+
+      formatarDataBR(x.data)+' - '+ x.cliente +
+      '</div>');
   });
 
   tela.document.write('</body></html>');
@@ -267,9 +331,17 @@ function exportarPDF(){
   tela.print();
 }
 
+
+// =========================
+// INICIALIZAÇÃO
+// =========================
 popularSelects();
 gerarCalendario();
 
+
+// =========================
+// SERVICE WORKER (PWA)
+// =========================
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js')
     .then(() => console.log("Service Worker registrado"))
