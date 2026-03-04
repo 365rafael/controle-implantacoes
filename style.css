@@ -223,3 +223,79 @@ th {
   padding: 0;
   font-size: 14px;
 }
+
+/* ============================= */
+/* MODO IMPRESSÃO */
+/* ============================= */
+
+@media print {
+
+  body {
+    background: white;
+  }
+
+  header,
+  nav,
+  input,
+  button {
+    display: none !important;
+  }
+
+  main {
+    padding: 0;
+    margin: 0;
+  }
+
+  .card {
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #totalMes {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  th {
+    background: #ddd !important;
+  }
+
+}
+/* Esconder coluna Ações no PDF */
+@media print {
+
+   .titulo-relatorio {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+    .rodape-relatorio {
+    margin-top: 40px;
+    font-size: 11px;
+  }
+  /* Esconde última coluna (Ações) */
+  #tabelaRelatorio th:last-child,
+  #tabelaRelatorio td:last-child {
+    display: none !important;
+  }
+
+}
+.titulo-relatorio {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.rodape-relatorio {
+  margin-top: 25px;
+  font-size: 12px;
+  text-align: right;
+  color: #555;
+}

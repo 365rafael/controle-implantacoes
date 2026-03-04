@@ -24,17 +24,24 @@
         <div class="card">
             <input type="month" id="filtroMes" onchange="gerarRelatorio()">
 
+            <h2 id="tituloRelatorio" class="titulo-relatorio"></h2>
+
             <p id="totalMes" style="font-weight:bold; margin-top:10px;"></p>
 
             <table id="tabelaRelatorio"></table>
 
-            <button onclick="window.print()">Exportar PDF</button>
+            <p id="rodapeRelatorio" class="rodape-relatorio"></p>
+
+            <button onclick="exportarPDF()">Exportar PDF</button>
         </div>
     </main>
 
     <script src="script.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", gerarRelatorio);
+        document.addEventListener("DOMContentLoaded", function () {
+            definirMesAtualNoFiltro();
+            gerarRelatorio();
+        });
     </script>
 
 </body>

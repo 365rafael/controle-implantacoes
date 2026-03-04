@@ -69,10 +69,46 @@ function atualizarDashboard() {
 // RELATÓRIO
 // =============================
 
+function definirMesAtualNoFiltro() {
+
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+
+    const campo = document.getElementById("filtroMes");
+
+    if (campo) {
+        campo.value = `${ano}-${mes}`;
+    }
+}
+
 function gerarRelatorio() {
 
     const lista = carregarImplantacoes();
     const filtro = document.getElementById("filtroMes")?.value;
+
+    // =============================
+    // TÍTULO DO RELATÓRIO
+    // =============================
+
+    if (filtro) {
+
+        const [ano, mes] = filtro.split("-");
+
+        const nomesMeses = [
+            "JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL",
+            "MAIO", "JUNHO", "JULHO", "AGOSTO",
+            "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"
+        ];
+
+        const nomeMes = nomesMeses[Number(mes) - 1];
+
+        const titulo = document.getElementById("tituloRelatorio");
+
+        if (titulo) {
+            titulo.innerText = `RELATÓRIO DE IMPLANTAÇÕES – ${nomeMes} ${ano}`;
+        }
+    }
 
     let filtrado = lista.map((item, index) => ({
         ...item,
@@ -114,6 +150,56 @@ function gerarRelatorio() {
     if (totalEl) {
         totalEl.innerText = `Total no mês: ${filtrado.length}`;
     }
+
+    // =============================
+    // RODAPÉ DO RELATÓRIO
+    // =============================
+
+    const rodape = document.getElementById("rodapeRelatorio");
+
+    if (rodape) {
+
+        const hoje = new Date();
+        const dia = String(hoje.getDate()).padStart(2, "0");
+        const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+        const ano = hoje.getFullYear();
+
+        rodape.innerText = `Rafael Arantes da Silva`;
+    }
+}
+
+function exportarPDF() {
+
+    const filtro = document.getElementById("filtroMes")?.value;
+
+    if (!filtro) {
+        alert("Selecione um mês primeiro.");
+        return;
+    }
+
+    const [ano, mes] = filtro.split("-");
+
+    const nomesMeses = [
+        "Janeiro", "Fevereiro", "Marco", "Abril",
+        "Maio", "Junho", "Julho", "Agosto",
+        "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
+
+    const nomeMes = nomesMeses[Number(mes) - 1];
+
+    const nomeArquivo = `Relatorio-${nomeMes}-${ano}`;
+
+    // Guarda título atual
+    const tituloOriginal = document.title;
+
+    // Altera título temporariamente
+    document.title = nomeArquivo;
+
+    // Imprime
+    window.print();
+
+    // Restaura título
+    document.title = tituloOriginal;
 }
 
 // =============================
