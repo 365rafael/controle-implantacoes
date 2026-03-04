@@ -51,20 +51,47 @@ function salvarImplantacao() {
 // =============================
 
 function atualizarDashboard() {
+
     const lista = carregarImplantacoes();
     const hoje = new Date();
+
     const mesAtual = hoje.getMonth() + 1;
     const anoAtual = hoje.getFullYear();
 
-    const total = lista.filter(item => {
-        const partes = item.data.split("-");
-        return Number(partes[1]) === mesAtual && Number(partes[0]) === anoAtual;
-    }).length;
+    // Descobrir mês anterior
+    let mesAnterior = mesAtual - 1;
+    let anoMesAnterior = anoAtual;
+
+    if (mesAnterior === 0) {
+        mesAnterior = 12;
+        anoMesAnterior = anoAtual - 1;
+    }
+
+    let totalMesAtual = 0;
+    let totalMesAnterior = 0;
+
+    lista.forEach(item => {
+
+        const [ano, mes] = item.data.split("-").map(Number);
+
+        if (mes === mesAtual && ano === anoAtual) {
+            totalMesAtual++;
+        }
+
+        if (mes === mesAnterior && ano === anoMesAnterior) {
+            totalMesAnterior++;
+        }
+    });
 
     const el = document.getElementById("resumoMes");
-    if (el) el.innerText = `Total este mês: ${total}`;
-}
 
+    if (el) {
+        el.innerHTML = `
+            Total este mês: ${totalMesAtual} <br>
+            Mês anterior: ${totalMesAnterior}
+        `;
+    }
+}
 // =============================
 // RELATÓRIO
 // =============================
