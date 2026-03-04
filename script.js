@@ -158,7 +158,10 @@ function excluirRegistro(index) {
 
 function exportarBackup() {
 
-    const dados = carregarImplantacoes();
+    const dados = {
+        implantacoes: carregarImplantacoes(),
+        anotacoes: carregarAnotacao()
+    };
 
     const blob = new Blob(
         [JSON.stringify(dados, null, 2)],
@@ -195,12 +198,19 @@ function importarBackup() {
 
                 const dados = JSON.parse(e.target.result);
 
-                if (!Array.isArray(dados)) {
-                    alert("Arquivo inválido!");
-                    return;
+                // Novo formato (implantacoes + anotacoes)
+                if (dados.implantacoes) {
+                    localStorage.setItem("implantacoes", JSON.stringify(dados.implantacoes));
                 }
 
-                localStorage.setItem("implantacoes", JSON.stringify(dados));
+                if (dados.anotacoes !== undefined) {
+                    localStorage.setItem("anotacoes", dados.anotacoes);
+                }
+
+                // Compatibilidade com backup antigo (somente lista)
+                if (Array.isArray(dados)) {
+                    localStorage.setItem("implantacoes", JSON.stringify(dados));
+                }
 
                 alert("Backup restaurado com sucesso!");
 
@@ -233,6 +243,53 @@ function gerarCalendario() {
         `;
     });
 }
+
+// =============================
+// ANOTAÇÕES
+// =============================
+
+function carregarAnotacao() {
+    return localStorage.getItem("anotacoes") || "";
+}
+
+function salvarAnotacao() {
+    const texto = document.getElementById("textoAnotacao").value;
+    localStorage.setItem("anotacoes", texto);
+
+    atualizarAnotacao();
+    toggleEdicaoAnotacao();
+}
+
+function atualizarAnotacao() {
+    const texto = carregarAnotacao();
+    const div = document.getElementById("visualizacaoAnotacao");
+
+    if (!div) return;
+
+    if (texto.trim() === "") {
+        div.innerHTML = "<p style='color:gray;'>Nenhuma anotação cadastrada.</p>";
+    } else {
+        div.innerHTML = texto.replace(/\n/g, "<br>");
+    }
+}
+
+function toggleEdicaoAnotacao() {
+
+    const areaEdicao = document.getElementById("edicaoAnotacao");
+    const areaVisualizacao = document.getElementById("visualizacaoAnotacao");
+    const textarea = document.getElementById("textoAnotacao");
+
+    if (areaEdicao.style.display === "none") {
+        textarea.value = carregarAnotacao();
+        areaEdicao.style.display = "block";
+        areaVisualizacao.style.display = "none";
+    } else {
+        areaEdicao.style.display = "none";
+        areaVisualizacao.style.display = "block";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", atualizarAnotacao);
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js");

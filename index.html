@@ -27,6 +27,19 @@
     <p id="resumoMes"></p>
   </div>
   <div class="card">
+  <div class="bloco-anotacoes-header">
+    <h2>📝 Anotações</h2>
+    <button class="btn-editar-anotacao" onclick="toggleEdicaoAnotacao()">✏</button>
+  </div>
+
+  <div id="visualizacaoAnotacao"></div>
+
+  <div id="edicaoAnotacao" style="display:none;">
+    <textarea id="textoAnotacao" rows="6" placeholder="Digite suas anotações aqui..."></textarea>
+    <button onclick="salvarAnotacao()">💾 Salvar</button>
+  </div>
+</div>
+  <div class="card">
   <h2>Backup</h2>
   <button onclick="exportarBackup()">💾 Salvar Backup</button>
   <button onclick="importarBackup()">📂 Restaurar Backup</button>

@@ -56,6 +56,39 @@ main {
   margin-bottom: 20px;
 }
 
+/* ============================= */
+/* ANOTAÇÕES */
+/* ============================= */
+
+.bloco-anotacoes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-editar-anotacao {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  background: #f1c40f;
+  color: black;
+  border-radius: 8px;
+}
+
+.btn-editar-anotacao:hover {
+  background: #d4ac0d;
+}
+
+#visualizacaoAnotacao {
+  margin-top: 10px;
+  white-space: pre-wrap;
+}
+
+#edicaoAnotacao textarea {
+  width: 100%;
+  resize: vertical;
+}
+
 /* INPUTS */
 input, button {
   width: 100%;
