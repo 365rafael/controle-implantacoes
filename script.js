@@ -33,17 +33,27 @@ function formatarDataBR(dataISO) {
 // =============================
 
 function salvarImplantacao() {
+
     const data = document.getElementById("data").value;
     const cliente = document.getElementById("cliente").value;
+    const observacao = document.getElementById("observacao").value;
 
     if (!data || !cliente) return alert("Preencha todos os campos");
 
     const lista = carregarImplantacoes();
-    lista.push({ data, cliente });
+
+    lista.push({
+        data,
+        cliente,
+        observacao
+    });
+
     salvarNoStorage(lista);
 
     alert("Salvo!");
+
     document.getElementById("cliente").value = "";
+    document.getElementById("observacao").value = "";
 }
 
 // =============================
@@ -157,15 +167,18 @@ function gerarRelatorio() {
         <tr>
             <th>Data</th>
             <th>Cliente</th>
+            <th>Observações</th>
             <th>Ações</th>
         </tr>
     `;
 
     filtrado.forEach(item => {
+        const obs = item.observacao || "";
         tabela.innerHTML += `
             <tr>
                 <td>${formatarDataBR(item.data)}</td>
                 <td>${item.cliente}</td>
+                <td>${obs}</td>
                 <td class="acoes">
   <button class="btn-editar" onclick="editarRegistro(${item.indexOriginal})">✏</button>
   <button class="btn-excluir" onclick="excluirRegistro(${item.indexOriginal})">🗑</button>
@@ -244,9 +257,12 @@ function editarRegistro(index) {
     const novoCliente = prompt("Editar cliente:", item.cliente);
     if (!novoCliente) return;
 
+    const novaObs = prompt("Editar observação:", item.observacao || "");
+
     lista[index] = {
         data: novaData,
-        cliente: novoCliente
+        cliente: novoCliente,
+        observacao: novaObs
     };
 
     salvarNoStorage(lista);
