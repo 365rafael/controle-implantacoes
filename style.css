@@ -81,13 +81,10 @@ main {
 }
 
 .novo-lembrete button{
-  width:auto;
-  padding:10px 16px;
-  border:none;
-  border-radius:6px;
-  background:#2e86de;
-  color:white;
-  cursor:pointer;
+  width: 45px;      /* largura fixa pequena */
+  flex: none;       /* impede esticar */
+  padding: 10px;
+  font-size: 18px;
 }
 
 /* quadro */
