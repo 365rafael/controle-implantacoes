@@ -108,40 +108,115 @@ function atualizarDashboard() {
 // LEMBRETES
 // =============================
 
-let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
+// =============================
+// CORES DOS POST-ITS
+// =============================
 
 const coresPostit = [
-"#fff59d",
-"#ffccbc",
-"#c8e6c9",
-"#bbdefb",
-"#e1bee7"
+    "#fff59d",
+    "#ffccbc",
+    "#c8e6c9",
+    "#bbdefb",
+    "#f8bbd0",
+    "#d1c4e9",
+    "#ffe082",
+    "#b2dfdb"
 ];
 
-function salvarLembretes(){
+let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
+
+// =============================
+// STORAGE
+// =============================
+
+function salvarLembretes() {
     localStorage.setItem("lembretes", JSON.stringify(lembretes));
 }
 
-function renderizarLembretes(){
+// =============================
+// ESCOLHER COR SEM REPETIR
+// =============================
+
+function escolherCorDisponivel() {
+
+    const coresUsadas = lembretes.map(l => l.cor);
+
+    const disponiveis = coresPostit.filter(c => !coresUsadas.includes(c));
+
+    if (disponiveis.length === 0) {
+        return coresPostit[Math.floor(Math.random() * coresPostit.length)];
+    }
+
+    return disponiveis[Math.floor(Math.random() * disponiveis.length)];
+}
+
+// =============================
+// ADICIONAR LEMBRETE
+// =============================
+
+function adicionarLembrete() {
+
+    const input = document.getElementById("novoLembrete");
+    const texto = input.value.trim();
+
+    if (texto === "") return;
+
+    const corEscolhida = escolherCorDisponivel();
+
+    lembretes.push({
+        texto: texto,
+        cor: corEscolhida
+    });
+
+    input.value = "";
+
+    salvarLembretes();
+    renderizarLembretes();
+}
+
+// =============================
+// REMOVER
+// =============================
+
+function removerLembrete(index) {
+
+    lembretes.splice(index, 1);
+
+    salvarLembretes();
+    renderizarLembretes();
+}
+
+// =============================
+// RENDERIZAR
+// =============================
+
+function renderizarLembretes() {
 
     const container = document.getElementById("kanbanLembretes");
-    if(!container) return;
+    if (!container) return;
 
-    container.innerHTML="";
+    container.innerHTML = "";
 
-    lembretes.forEach((texto,index)=>{
+    lembretes.forEach((item, index) => {
+
+        // compatibilidade com lembretes antigos (texto simples)
+        if (typeof item === "string") {
+            item = { texto: item, cor: escolherCorDisponivel() };
+            lembretes[index] = item;
+            salvarLembretes();
+        }
 
         const div = document.createElement("div");
-        div.className="postit";
-        div.draggable=true;
-        div.dataset.index=index;
 
-        const cor = coresPostit[Math.floor(Math.random()*coresPostit.length)];
-        div.style.background = cor;
+        div.className = "postit";
+        div.draggable = true;
+        div.dataset.index = index;
 
-        div.innerHTML=`
+        div.style.background = item.cor;
+
+        div.innerHTML = `
             <button onclick="removerLembrete(${index})">x</button>
-            ${texto}
+            ${item.texto}
         `;
 
         container.appendChild(div);
@@ -150,52 +225,32 @@ function renderizarLembretes(){
     ativarDrag();
 }
 
-function adicionarLembrete(){
+// =============================
+// DRAG & DROP
+// =============================
 
-    const input=document.getElementById("novoLembrete");
-    const texto=input.value.trim();
-
-    if(texto==="") return;
-
-    lembretes.push(texto);
-
-    input.value="";
-
-    salvarLembretes();
-    renderizarLembretes();
-}
-
-function removerLembrete(index){
-
-    lembretes.splice(index,1);
-
-    salvarLembretes();
-    renderizarLembretes();
-}
-
-function ativarDrag(){
+function ativarDrag() {
 
     const postits = document.querySelectorAll(".postit");
-    const container = document.getElementById("kanbanLembretes");
 
     let arrastandoIndex = null;
 
-    postits.forEach(postit=>{
+    postits.forEach(postit => {
 
-        postit.addEventListener("dragstart",(e)=>{
+        postit.addEventListener("dragstart", () => {
             arrastandoIndex = Number(postit.dataset.index);
         });
 
-        postit.addEventListener("dragover",(e)=>{
+        postit.addEventListener("dragover", (e) => {
             e.preventDefault();
         });
 
-        postit.addEventListener("drop",(e)=>{
+        postit.addEventListener("drop", () => {
 
             const destinoIndex = Number(postit.dataset.index);
 
-            const item = lembretes.splice(arrastandoIndex,1)[0];
-            lembretes.splice(destinoIndex,0,item);
+            const item = lembretes.splice(arrastandoIndex, 1)[0];
+            lembretes.splice(destinoIndex, 0, item);
 
             salvarLembretes();
             renderizarLembretes();
@@ -203,6 +258,10 @@ function ativarDrag(){
 
     });
 }
+
+// =============================
+// INICIAR
+// =============================
 
 document.addEventListener("DOMContentLoaded", renderizarLembretes);
 
