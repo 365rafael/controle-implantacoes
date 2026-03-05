@@ -57,6 +57,79 @@ main {
 }
 
 /* ============================= */
+/* QUADRO DE LEMBRETES */
+/* ============================= */
+
+.novo-lembrete{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.novo-lembrete{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.novo-lembrete input{
+  width:auto;
+  flex:1;
+  padding:10px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+.novo-lembrete button{
+  width:auto;
+  padding:10px 16px;
+  border:none;
+  border-radius:6px;
+  background:#2e86de;
+  color:white;
+  cursor:pointer;
+}
+
+/* quadro */
+
+.quadro-lembretes{
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+  margin-top:15px;
+}
+
+/* post-it */
+
+.postit{
+  background:#fff59d;
+  transform: rotate(-1deg);
+  width:180px;
+  min-height:100px;
+  padding:15px;
+  border-radius:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+  position:relative;
+  font-size:14px;
+}
+
+/* botão excluir */
+
+.postit button{
+  position:absolute;
+  top:5px;
+  right:5px;
+  border:none;
+  background:red;
+  color:white;
+  border-radius:50%;
+  width:20px;
+  height:20px;
+  cursor:pointer;
+  font-size:12px;
+}
+
+/* ============================= */
 /* ANOTAÇÕES */
 /* ============================= */
 

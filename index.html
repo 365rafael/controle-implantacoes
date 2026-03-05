@@ -1,56 +1,73 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - Implantações</title>
 
-<link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2e86de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Implantações</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2e86de">
 </head>
+
 <body>
 
-<header>
-  <h1>📊 Dashboard</h1>
-</header>
+  <header>
+    <h1>📊 Dashboard</h1>
+  </header>
 
-<nav>
-  <a href="index.html">Dashboard</a>
-  <a href="nova.html">➕ Nova</a>
-  <a href="relatorio.html">📄 Relatório</a>
-</nav>
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a href="nova.html">➕ Nova</a>
+    <a href="relatorio.html">📄 Relatório</a>
+  </nav>
 
-<main>
-  <div class="card">
-    <h2>Implantações do mês</h2>
-    <p id="resumoMes"></p>
-  </div>
-  <div class="card">
-  <div class="bloco-anotacoes-header">
-    <h2>📝 Anotações</h2>
-    <button class="btn-editar-anotacao" onclick="toggleEdicaoAnotacao()">✏</button>
-  </div>
+  <main>
+    <div class="card">
+      <h2>Implantações do mês</h2>
+      <p id="resumoMes"></p>
+    </div>
 
-  <div id="visualizacaoAnotacao"></div>
+    <div class="card">
 
-  <div id="edicaoAnotacao" style="display:none;">
-    <textarea id="textoAnotacao" rows="6" placeholder="Digite suas anotações aqui..."></textarea>
-    <button onclick="salvarAnotacao()">💾 Salvar</button>
-  </div>
-</div>
-  <div class="card">
-  <h2>Backup</h2>
-  <button onclick="exportarBackup()">💾 Salvar Backup</button>
-  <button onclick="importarBackup()">📂 Restaurar Backup</button>
-  <input type="file" id="inputBackup" style="display:none">
-</div>
-</main>
+      <h3>📝 Lembretes</h3>
 
-<script src="script.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", atualizarDashboard);
-</script>
+      <div class="novo-lembrete">
+        <input type="text" id="novoLembrete" placeholder="Digite um lembrete...">
+        <button onclick="adicionarLembrete()">➕ Adicionar</button>
+      </div>
+
+      <div id="kanbanLembretes" class="quadro-lembretes"></div>
+
+    </div>
+
+    <div class="card">
+      <div class="bloco-anotacoes-header">
+        <h2>📝 Anotações</h2>
+        <button class="btn-editar-anotacao" onclick="toggleEdicaoAnotacao()">✏</button>
+      </div>
+
+      <div id="visualizacaoAnotacao"></div>
+
+      <div id="edicaoAnotacao" style="display:none;">
+        <textarea id="textoAnotacao" rows="6" placeholder="Digite suas anotações aqui..."></textarea>
+        <button onclick="salvarAnotacao()">💾 Salvar</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Backup</h2>
+      <button onclick="exportarBackup()">💾 Salvar Backup</button>
+      <button onclick="importarBackup()">📂 Restaurar Backup</button>
+      <input type="file" id="inputBackup" style="display:none">
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", atualizarDashboard);
+  </script>
 
 </body>
+
 </html>

@@ -102,6 +102,110 @@ function atualizarDashboard() {
         `;
     }
 }
+
+
+// =============================
+// LEMBRETES
+// =============================
+
+let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
+
+const coresPostit = [
+"#fff59d",
+"#ffccbc",
+"#c8e6c9",
+"#bbdefb",
+"#e1bee7"
+];
+
+function salvarLembretes(){
+    localStorage.setItem("lembretes", JSON.stringify(lembretes));
+}
+
+function renderizarLembretes(){
+
+    const container = document.getElementById("kanbanLembretes");
+    if(!container) return;
+
+    container.innerHTML="";
+
+    lembretes.forEach((texto,index)=>{
+
+        const div = document.createElement("div");
+        div.className="postit";
+        div.draggable=true;
+        div.dataset.index=index;
+
+        const cor = coresPostit[Math.floor(Math.random()*coresPostit.length)];
+        div.style.background = cor;
+
+        div.innerHTML=`
+            <button onclick="removerLembrete(${index})">x</button>
+            ${texto}
+        `;
+
+        container.appendChild(div);
+    });
+
+    ativarDrag();
+}
+
+function adicionarLembrete(){
+
+    const input=document.getElementById("novoLembrete");
+    const texto=input.value.trim();
+
+    if(texto==="") return;
+
+    lembretes.push(texto);
+
+    input.value="";
+
+    salvarLembretes();
+    renderizarLembretes();
+}
+
+function removerLembrete(index){
+
+    lembretes.splice(index,1);
+
+    salvarLembretes();
+    renderizarLembretes();
+}
+
+function ativarDrag(){
+
+    const postits = document.querySelectorAll(".postit");
+    const container = document.getElementById("kanbanLembretes");
+
+    let arrastandoIndex = null;
+
+    postits.forEach(postit=>{
+
+        postit.addEventListener("dragstart",(e)=>{
+            arrastandoIndex = Number(postit.dataset.index);
+        });
+
+        postit.addEventListener("dragover",(e)=>{
+            e.preventDefault();
+        });
+
+        postit.addEventListener("drop",(e)=>{
+
+            const destinoIndex = Number(postit.dataset.index);
+
+            const item = lembretes.splice(arrastandoIndex,1)[0];
+            lembretes.splice(destinoIndex,0,item);
+
+            salvarLembretes();
+            renderizarLembretes();
+        });
+
+    });
+}
+
+document.addEventListener("DOMContentLoaded", renderizarLembretes);
+
 // =============================
 // RELATÓRIO
 // =============================
